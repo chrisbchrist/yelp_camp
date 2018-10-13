@@ -35,3 +35,13 @@ footer {
     padding: .20rem .12rem;
     font-size: .8rem;
 }
+
+#jumbo-header {
+    background: url("https://res.cloudinary.com/dgeb3iekh/image/upload/v1539472624/pexels-photo-672358_f9jpbu.jpg") no-repeat center;
+    background-size: cover;
+    color: white;
+}
+
+#jumbo-header h1 {
+    text-shadow: 2px 2px rgba(0,0,0,0.5);
+}
