@@ -18,8 +18,9 @@ const express = require("express"),
 
 
 var app = express();
-//mongoose.connect("mongodb://localhost/yelp_camp",  { useNewUrlParser: true });
-mongoose.connect("mongodb://admin:yelpcamp1@ds131697.mlab.com:31697/yelp_camp",  { useNewUrlParser: true });
+console.log(process.env.DATABASEURL);
+mongoose.connect(process.env.DATABASEURL,  { useNewUrlParser: true });
+//mongoose.connect("mongodb://admin:yelpcamp1@ds131697.mlab.com:31697/yelp_camp",  { useNewUrlParser: true });
 
 app.set("view engine", "ejs");
 
