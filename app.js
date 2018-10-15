@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express"),
       ejs = require("ejs"),
       bodyParser = require('body-parser'),
@@ -9,17 +10,24 @@ const express = require("express"),
       passport = require('passport'),
       LocalStrategy = require('passport-local'),
       methodOverride = require('method-override'),
-      flash = require('connect-flash');
+      flash = require('connect-flash'),
+      NodeGeocoder = require('node-geocoder');
       
       var campgroundRoutes = require('./routes/campgrounds'),
       commentRoutes = require('./routes/comments'),
        indexRoutes = require('./routes/index');
       
+/*var geocodeOptions = {
+  provider: 'google',
 
-
+  httpAdapter: 'https', // Default
+  apiKey: process.env.GEOCODER_API_KEY, // for Mapquest, OpenCage, Google Premier
+  formatter: null         // 'gpx', 'string', ...
+};
+*/
 var app = express();
 console.log(process.env.DATABASEURL);
-mongoose.connect(process.env.DATABASEURL,  { useNewUrlParser: true });
+mongoose.connect(process.env.DATABASEURL || "mongodb://localhost/yelp_camp",  { useNewUrlParser: true });
 //mongoose.connect("mongodb://admin:yelpcamp1@ds131697.mlab.com:31697/yelp_camp",  { useNewUrlParser: true });
 
 app.set("view engine", "ejs");
@@ -61,4 +69,5 @@ app.use("/campgrounds/:id/comments", commentRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function() {
     console.log("Yelp Camp is listening :D");
+     console.log(process.env.GEOCODER_API_KEY)
 });
