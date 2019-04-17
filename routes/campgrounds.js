@@ -65,12 +65,14 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
 
 //SHOW details of one campground
 router.get("/:id", function(req, res) {
-    Campground.findById(req.params.id).populate("comments").exec(function(err, result) {
-        if (err) {
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground) {
+        if (err || !foundCampground) {
             console.log(err);
+            req.flash('error', 'Campground not found');
+            return res.redirect('/campgrounds');
         } else {
 
-            res.render("campgrounds/show", { campground: result });
+            res.render("campgrounds/show", { campground: foundCampground });
         }
     });
 

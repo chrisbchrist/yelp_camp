@@ -26,7 +26,6 @@ const express = require("express"),
 };
 */
 var app = express();
-console.log(process.env.DATABASEURL);
 mongoose.connect(process.env.DATABASEURL || "mongodb://localhost/yelp_camp",  { useNewUrlParser: true });
 //mongoose.connect("mongodb://admin:yelpcamp1@ds131697.mlab.com:31697/yelp_camp",  { useNewUrlParser: true });
 
@@ -68,6 +67,5 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function() {
-    console.log("Yelp Camp is listening :D");
-     console.log(process.env.GEOCODER_API_KEY)
+    console.log("Yelp Camp is listening!! :D");
 });
