@@ -83,19 +83,23 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, re
 });
 
 //POST Add like to a comment
-router.post("/:comment_id/like", middleware.isLoggedIn, function(req, res) {
+router.post("/:comment_id/like", middleware.canLike, function(req, res) {
     Comment.findById(req.params.comment_id, function(err, foundComment) {
         if (err || !foundComment) {
             req.flash("error", "Comment not found");
             res.redirect("back");
         } else {
-            if (foundComment.likes.filter(like => like.user.toString() === req.user._id)
+            if (foundComment.likes.filter(like => like.user.toString() === res.locals.user_id.toString())
             .length > 0) {
-                req.flash("error", "User has already liked this post.");
-                res.redirect("back")
+                // req.flash("error", "User has already liked this post.");
+                // res.redirect("back");
+                res.json({ status: "failure" });
             } else {
                 foundComment.likes.unshift({ user: req.user._id });
                 foundComment.save();
+                const newLikes = foundComment.likes.length;
+                res.json({status: "success", newLikes: newLikes});
+                console.log(res.locals.user_id);
             }
         }
     })

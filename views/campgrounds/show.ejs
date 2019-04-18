@@ -39,26 +39,28 @@
                     </div>
                     <hr>
                     <% campground.comments.forEach(function(comment) { %>
-                    
                         <div class="row">
                             <div class="col-md-12 comment">
-                                 <strong><%= comment.author.username %></strong>
-                                 <span class="float-right"><strong><%= comment.date %></strong></span>
-                                 <p><%= comment.text %></p>
-                                 
-                                <% if (currentUser && comment.author.id.equals(currentUser._id)) { %>
+                                 <p class="comment__author"><strong><%= comment.author.username %></strong></p>
+                                 <p class="comment__text"><%= comment.text %></p>
+                                 <div class="comment__date"><%= comment.date %></div>
                                 <div class="comment-functions">
+                                  <div class="likes" data-comment="<%= comment._id %>" title="Like this comment" role="button">
+                                        <span class="<%= (currentUser && comment.likes.filter(like => like._id.equals(currentUser._id))
+            .length > 0) ? "likes__icon liked" : "likes__icon" %>"><i class="fas fa-heart"></i></span>
+                                        <span class="likes__count"><%= comment.likes.length %></span>
+                                 </div>
+                                    
+                                <% if (currentUser && comment.author.id.equals(currentUser._id)) { %>
+                                <div class="comment__user-controls">
                                  <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
                                  <form class="delete" method="POST" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE">
                                     <button class="btn btn-xs btn-danger">Delete</button>
                                  </form>
-                                 <div class="likes"><%= comment.likes.length %> 
-                                    <form method="POST" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/like">
-                                        <button class="btn like-btn"><i class="fas fa-thumbs-up"></i></button>
-                                    </form>
-                                 </div>
                                 </div>
                                 <% } %>
+
+                                </div>
                                  <hr>
                             </div>
                         </div>
@@ -101,6 +103,25 @@
       infowindow.open(map, marker);
     });
   }
+  
+  $(".likes").click(function() {
+      const commentId = $(this).data("comment");
+      const _self = $(this);
+      $.ajax({
+          url: "/campgrounds/<%= campground._id %>/comments/" + commentId + "/like",
+          method: "POST",
+          success: function(response) {
+              console.log(response);
+              if (response.status === "success") {
+                  _self.find(".likes__count").text(response.newLikes);
+              }
+              
+          }
+      })
+  })
+  
+  
+  
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDK5NgKTZ2eg6hA5UP547005QGqT6QeQVQ&callback=initMap"></script>
 

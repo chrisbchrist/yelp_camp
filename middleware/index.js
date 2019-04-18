@@ -62,6 +62,14 @@ middlewareObj.isLoggedIn = function(req, res, next) {
     res.redirect("/login");
 }
 
+middlewareObj.canLike = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        res.locals.user_id = req.user._id;
+        return next();
+    }
+    res.json({ status: "failure" })
+}
+
     
 
 
