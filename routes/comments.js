@@ -80,6 +80,25 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, re
             res.redirect("/campgrounds/" + req.params.id);
         }
     })
+});
+
+//POST Add like to a comment
+router.post("/:comment_id/like", middleware.isLoggedIn, function(req, res) {
+    Comment.findById(req.params.comment_id, function(err, foundComment) {
+        if (err || !foundComment) {
+            req.flash("error", "Comment not found");
+            res.redirect("back");
+        } else {
+            if (foundComment.likes.filter(like => like.user.toString() === req.user._id)
+            .length > 0) {
+                req.flash("error", "User has already liked this post.");
+                res.redirect("back")
+            } else {
+                foundComment.likes.unshift({ user: req.user._id });
+                foundComment.save();
+            }
+        }
+    })
 })
 
 

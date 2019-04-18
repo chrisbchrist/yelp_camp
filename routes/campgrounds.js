@@ -65,14 +65,12 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
 
 //SHOW details of one campground
 router.get("/:id", function(req, res) {
-    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground) {
-        if (err || !foundCampground) {
+    Campground.findById(req.params.id).populate("comments").exec(function(err, result) {
+        if (err) {
             console.log(err);
-            req.flash('error', 'Campground not found');
-            return res.redirect('/campgrounds');
         } else {
 
-            res.render("campgrounds/show", { campground: foundCampground });
+            res.render("campgrounds/show", { campground: result });
         }
     });
 
@@ -82,6 +80,10 @@ router.get("/:id", function(req, res) {
 router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) {
 
     Campground.findById(req.params.id, function(err, foundCampground) {
+        if (err || !foundCampground) {
+            req.flash('error', 'Campground not found');
+            return res.redirect('back');
+        }
         res.render("campgrounds/edit", {campground: foundCampground});
         })
     });
@@ -110,8 +112,8 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
     req.body.campground.lng = data[0].longitude;
     req.body.campground.location = data[0].formattedAddress;
 
-    Campground.findOneAndUpdate(req.params.id, req.body.campground, function(err, campground){
-        if(err){
+    Campground.findOneAndUpdate({ _id: req.params.id }, req.body.campground, function(err, campground){
+        if(err || !campground){
             req.flash("error", err.message);
             res.redirect("back");
         } else {
