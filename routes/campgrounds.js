@@ -78,6 +78,7 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
 
 // });
 
+//SHOW 
 router.get("/:id", function(req, res) {
     Campground.aggregate([
     { $match: { _id: mongoose.Types.ObjectId(req.params.id) }},

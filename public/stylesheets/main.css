@@ -52,20 +52,43 @@ footer {
 }
 
 #jumbo-header {
-    background: url("https://res.cloudinary.com/dgeb3iekh/image/upload/c_scale,w_1082/v1548425942/clear-day.jpg") no-repeat center;
+    background: url("https://i.imgur.com/SBEmFpv.jpg") no-repeat center;
     background-size: cover;
-    color: white;;
+    color: white;
+    position: relative;
+    height: 25vw;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+
+}
+
+#jumbo-header::before {
+    content: "";
+    width: 100%;
+    height:100%;
+    background: rgba(0,0,0,0.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
 }
 
 .jumbotron-container {
-        display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    position: relative;
+    z-index: 1;
 }
 
-#jumbo-header h1 {
-    /*text-shadow: 3px 2px rgba(0,0,0,0.5);*/
+@media screen and (min-width: 1360px) {
+    #jumbo-header h1 {
+    font-size: 4em;
+}
+
 }
 
 #map {
