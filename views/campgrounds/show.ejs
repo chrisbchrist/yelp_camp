@@ -9,16 +9,48 @@
                 <li class="list-group-item">Info 1</li>
                 <li class="list-group-item">Info 1</li>
             </div>
-            <div id="map"></div>
+            <div class="map-wrapper">
+                <div id="map"></div>
+                <div class="location"><h4 class="location__name"><%= campground.location %></h4></div>
+            </div>
+            
+            
         </div>
         
         <div class="col-md-9">
+            <!--<div class="rating">-->
+            <!--    <div class="rating__star" data-value="1"></div> -->
+            <!--    <div class="rating__star" data-value="2"></div> -->
+            <!--    <div class="rating__star" data-value="3"></div> -->
+            <!--    <div class="rating__star" data-value="4"></div> -->
+            <!--    <div class="rating__star" data-value="5"></div> -->
+            <!--    -->
+            <!--</div>-->
+            <div class="rating">
+                <% if (campground.ratings.length > 0) { %>
+                <p class="rating__count"><em>Based on <%= campground.ratings.length %> rating(s)</em> </p>
+                <% } else { %>
+                 <p class="rating__count"><em>Be the first to review <%= campground.name %>!</em> </p>
+                 <% } %>
+                  <input type="radio" id="5-stars" name="rating" value="5" />
+                  <label for="5-stars" class="rating__star"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="4-stars" name="rating" value="4" />
+                  <label for="4-stars" class="rating__star"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="3-stars" name="rating" value="3" />
+                  <label for="3-stars" class="rating__star"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="2-stars" name="rating" value="2" />
+                  <label for="2-stars" class="rating__star"><i class="fas fa-star"></i></label>
+                  <input type="radio" id="1-star" name="rating" value="1" />
+                  <label for="1-star" class="rating__star"><i class="fas fa-star"></i></label>
+  <!--<div class="rating__score"><%= campground.rating_average %></div>-->
+               
+            </div>
             <div class="thumbnail">
                 <img class="img-lg" src="<%= campground.image %>" />
             
             <div class="caption">
                 <h4 class="float-right">$<%= campground.price %>/night</h4>
-                <h4><a href="#"><%= campground.name %></a></h4>
+                <h2><a href="#"><%= campground.name %></a></h2>
                 <p><%= campground.description %></p>
                 <p><em>Submitted by <%= campground.author.username %></em></p>
                 
@@ -46,7 +78,7 @@
                                  <div class="comment__date"><%= comment.date %></div>
                                 <div class="comment-functions">
                                   <div class="likes" data-comment="<%= comment._id %>" title="Like this comment" role="button">
-                                        <span class="<%= (currentUser && comment.likes.filter(like => like._id.equals(currentUser._id))
+                                        <span class="<%= (currentUser && comment.likes.filter(like => like.user.equals(currentUser._id))
             .length > 0) ? "likes__icon liked" : "likes__icon" %>"><i class="fas fa-heart"></i></span>
                                         <span class="likes__count"><%= comment.likes.length %></span>
                                  </div>
@@ -74,6 +106,23 @@
             
         </div>
     </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <% include ../partials/login-form %>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -114,11 +163,45 @@
               console.log(response);
               if (response.status === "success") {
                   _self.find(".likes__count").text(response.newLikes);
+                  _self.find(".likes__icon").addClass("liked");
+              } else if (response.msg === "login") {
+                  $('#login-modal').modal('show');
               }
               
           }
       })
   })
+  
+  $("input[name=rating]").change(function() {
+      const rating = $("input[name=rating]:checked").val();
+      console.log(rating);
+      $.ajax({
+          url: "/campgrounds/<%= campground._id %>/rate",
+          method: "PUT",
+         data: {
+             rating: rating
+         },
+          success: function(response) {
+              if (response.status === "success") {
+                  console.log(response);
+              } else {
+                  console.log(response);
+              }
+          }
+      })
+      
+  })
+  
+  const avgRating = <%= Math.round(campground.rating_average) %>;
+  $("#" + avgRating + "-stars").prop("checked", true);
+  const loggedIn = <%= currentUser ? true : false %>;
+  if (!loggedIn) {
+      $("input[name=rating]").attr("disabled", true);
+      $(".rating__star").click(function() {
+          $('#login-modal').modal('show');
+      })
+  }
+  
   
   
   

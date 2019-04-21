@@ -1,3 +1,7 @@
+body {
+    font-family: Raleway;
+}
+
 .navbar {
     border-bottom: 1px solid #eee;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -20,6 +24,17 @@ footer {
     color: #16a0db !important;
 }
 
+.campgrounds__popular {
+    margin-bottom: 2rem;
+}
+
+.campground__thumb {
+    width: 100%;
+    padding-top: 66%;
+    background-size: cover;
+    background-position: center;
+}
+
 .caption {
     padding: 10px;
     border-radius: 3px;
@@ -39,17 +54,41 @@ footer {
 #jumbo-header {
     background: url("https://res.cloudinary.com/dgeb3iekh/image/upload/c_scale,w_1082/v1548425942/clear-day.jpg") no-repeat center;
     background-size: cover;
-    color: white;
+    color: white;;
+}
+
+.jumbotron-container {
+        display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
 #jumbo-header h1 {
-    text-shadow: 3px 2px rgba(0,0,0,0.5);
+    /*text-shadow: 3px 2px rgba(0,0,0,0.5);*/
 }
 
 #map {
     height: 400px;
     width: 100%;
+    border-right: 1px solid rgba(0,0,0,.125);
+    border-left: 1px solid rgba(0,0,0,.125);
 }
+
+.location {
+    background: #f8f9fa;
+    padding: 15px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.location__name {
+    text-align: center;
+    font-style: italic;
+
+}
+
 
 .comment__author {
     color: #222;
@@ -90,8 +129,65 @@ footer {
     color: #ccc;
     font-size: 24px;
     padding-right: 10px;
+    transition: all .3s ease-in-out;
 }
 
 .likes__icon.liked {
     color: #ea98b7;
+}
+
+.rating {
+  border:solid 1px #ccc;
+  display:flex;
+  flex-direction: row-reverse;
+  font-size:1.5em;
+  justify-content:center;
+  align-items: center;
+  text-align:center;
+  background: #f8f9fa;
+  flex-wrap: wrap;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.rating input {
+  display:none;
+}
+
+.rating label {
+  color:#ccc;
+  cursor:pointer;
+  font-size: 35px;
+  transition: all .2s;
+}
+
+.rating label:active {
+    transform: translateY(2px);
+}
+
+.rating :checked ~ label {
+  color:#f90;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+  color:#fc0;
+}
+
+.rating__score {
+    font-size: 40px;
+    padding: 0 15px;
+}
+
+.rating__count {
+    text-align: center;
+    margin: 0;
+    font-size: 14px;
+    padding: 0 15px;
+}
+
+.register-link {
+    text-align: center;
+    padding: 15px 0;
+    display: block;
 }

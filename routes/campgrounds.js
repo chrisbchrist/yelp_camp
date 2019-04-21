@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var mongoose = require('mongoose');
 var Campground = require('../models/campground');
+var Comment = require('../models/comment');
 var middleware = require('../middleware/index');
 var NodeGeocoder = require('node-geocoder');
 
@@ -64,17 +66,42 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
 })
 
 //SHOW details of one campground
-router.get("/:id", function(req, res) {
-    Campground.findById(req.params.id).populate("comments").exec(function(err, result) {
-        if (err) {
-            console.log(err);
-        } else {
+// router.get("/:id", function(req, res) {
+//     Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             let avgRating = foundCampground.ratings.length > 0 ? foundCampground.ratings.reduce((acc, b) => acc.score + b.score) / foundCampground.ratings.length : 0;
+//             res.render("campgrounds/show", { campground: foundCampground, rating: avgRating });
+//         }
+//     });
 
-            res.render("campgrounds/show", { campground: result });
-        }
-    });
+// });
+
+router.get("/:id", function(req, res) {
+    Campground.aggregate([
+    { $match: { _id: mongoose.Types.ObjectId(req.params.id) }},
+    { $addFields: {
+        rating_average: { $avg: "$ratings.score" }
+     }},
+    { $lookup: {
+        from: Comment.collection.name,
+        localField: "comments",
+        foreignField: "_id",
+        as: "comments"
+    }},
+    // { $unwind: "$comments" },
+], function(err, result) {
+    if (err) {
+        console.log(err);
+    } else {
+        res.render("campgrounds/show", { campground: result[0] })
+        console.log(result[0]);
+    }
 
 });
+
+})
 
 //EDIT form
 router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) {
@@ -134,6 +161,27 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
         }
     })
 });
+
+//Give rating
+router.put("/:id/rate", middleware.canLike, function(req, res) {
+    Campground.findById(req.params.id, function(err, foundCampground) {
+        if (err || !foundCampground) {
+            req.flash("error", "Comment not found");
+            res.redirect("/");
+        } else {
+            console.log(req.body);
+            if (foundCampground.ratings.filter(rating => rating.user.toString() === res.locals.user_id.toString())
+            .length > 0) {
+                res.json({ status: "failure", msg: "User has already rated", attempt: req.body.rating });
+            } else {
+                foundCampground.ratings.unshift({ user: req.user._id, score: req.body.rating});
+                foundCampground.save();
+                const allRatings = foundCampground.ratings;
+                res.json({ status: "success", ratings: allRatings });
+            }
+        }
+    })
+})
 
 
 

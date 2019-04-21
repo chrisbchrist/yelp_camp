@@ -22,7 +22,19 @@ var campgroundSchema = new mongoose.Schema({
             ref: "Comment"
         }
         ],
-     
+     ratings: [
+         {
+         user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+         },
+         score: {
+             type: Number,
+             min: [1, "They get at least 1 just for existing"],
+             max: [5, "Woah woah, I'm sure it's great but 5 is the max here"]
+         }
+         }
+         ]
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);
