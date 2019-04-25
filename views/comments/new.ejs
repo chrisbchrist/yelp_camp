@@ -6,11 +6,11 @@
      <h1 class="text-center" style="padding: 20px;">Say something about <%= campground.name %></h1>
     <div class="row">
        
-        <div style="margin: auto; width: 30%">
+        <div style="margin: auto; width: 320px;">
         <form action="/campgrounds/<%= campground._id %>/comments" method="POST">
 
             <div class="form-group">
-                <input class="form-control" type="text" placeholder="Comment" name="comment[text]">
+                <textarea class="form-control" placeholder="Comment" name="comment[text]"></textarea>
             </div>
         
             <div class="form-group">

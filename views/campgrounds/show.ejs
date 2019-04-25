@@ -70,12 +70,24 @@
                         <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Post Comment</a>
                     </div>
                     <hr>
+                    <% function formatDate(isoDate) {
+      const month = isoDate.toLocaleString('en-us', { month: 'short' });
+      const monthDate = isoDate.getDate();
+      const hours = isoDate.getHours();
+      const minutes = isoDate.getMinutes().toString().length < 2 ? "0" + isoDate.getMinutes().toString() : isoDate.getMinutes();
+      console.log(hours, minutes);
+      
+      return month + " " + monthDate + ", " + hours + ":" + minutes; 
+  }
+ %>
+                    
+                    
                     <% campground.comments.forEach(function(comment) { %>
                         <div class="row">
                             <div class="col-md-12 comment">
                                  <p class="comment__author"><strong><%= comment.author.username %></strong></p>
                                  <p class="comment__text"><%= comment.text %></p>
-                                 <div class="comment__date"><%= comment.date %></div>
+                                 <div class="comment__date"><%= formatDate(comment.date) %></div>
                                 <div class="comment-functions">
                                   <div class="likes" data-comment="<%= comment._id %>" title="Like this comment" role="button">
                                         <span class="<%= (currentUser && comment.likes.filter(like => like.user.equals(currentUser._id))
@@ -202,8 +214,6 @@
           $('#login-modal').modal('show');
       })
   }
-  
-  
   
   
 </script>
